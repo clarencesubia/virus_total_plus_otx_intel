@@ -9,5 +9,5 @@
 
 ## References:
 
-[VirusTotal API Reference](https://developers.virustotal.com/reference/overview)
-[Commit History Cleanup](https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github)
+* [VirusTotal API Reference](https://developers.virustotal.com/reference/overview)
+* [Commit History Cleanup](https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github)
