@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Usage:
+# Usage: Clarence R. Subia
 # ./url_checker.py --url http://malicious-url.com/
 
 import json
