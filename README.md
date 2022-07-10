@@ -1,5 +1,5 @@
 # Virustotal URL Scan and Analysis through API
-# Author: Clarence Subia
+# Author: Clarence R. Subia
 
 ## Usage:
 
