@@ -1,14 +1,38 @@
-# Virustotal URL Scan and Analysis through API
+# Virustotal URL Scan and Hash Analysis through API
 # Author: Clarence R. Subia
 
-## Usage:
+## Prerequisites
+```
+sudo apt install ansible-vault
+pip3 install -r requirements.txt
+```
 
-* Create a text file named vtkey.txt and input the API key from VT.
-* python3 script.py --url https://malware.com/
-* Note that API keys are in plain text from your local system
-* Future modification may involve encrypting the vtkey.txt
+## Setup your API key
+
+- Encrypting your API token key using ansible-vault
+```
+ansible-vault create secrets.yml
+
+YAML Format:
+---
+api_key: "YOUR_TOKEN_HERE"
+```
+
+## Usage:
+- URL Scanning
+```
+python3 vt_lookup.py --url <DOMAIN NAME / URL>
+python3 vt_lookup.py --url <IP>
+```
+
+- Hash Scanning
+```
+python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5>
+```
+
 
 ## References:
 
 * [VirusTotal API Reference](https://developers.virustotal.com/reference/overview)
 * [Commit History Cleanup](https://stackoverflow.com/questions/13716658/how-to-delete-all-commit-history-in-github)
+* [Ansible Vault](https://pypi.org/project/ansible-vault/)
