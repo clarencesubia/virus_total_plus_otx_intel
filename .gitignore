@@ -2,3 +2,5 @@ results.*
 vtkey.txt
 secrets.yml
 vaultage.py
+url_checker.py
+vt_scan.py
