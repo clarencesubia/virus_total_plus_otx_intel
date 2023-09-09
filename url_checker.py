@@ -83,6 +83,8 @@ def url_analysis(id):
             scan_url()
             
             
+            
     
     
-if __name__ == "__main__": main()
+if __name__ == "__main__": 
+    main()
