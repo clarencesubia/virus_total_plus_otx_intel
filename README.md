@@ -19,15 +19,20 @@ api_key: "YOUR_TOKEN_HERE"
 ```
 
 ## Usage:
-- URL Scanning
+- URL / IP Scanning
 ```
 python3 vt_lookup.py --url <DOMAIN NAME / URL>
-python3 vt_lookup.py --url <IP>
+python3 vt_lookup.py --ip <IP>
 ```
 
 - Hash Scanning
 ```
 python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5>
+```
+
+- Print out comments on hash
+```
+python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5> --hash-comments
 ```
 
 
