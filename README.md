@@ -1,4 +1,4 @@
-# Virustotal URL Scan and Hash Analysis through API
+# Virustotal / OTX URL, IP, and Hash Analysis through API
 ## Author: Clarence R. Subia
 
 ## Prerequisites
@@ -15,7 +15,8 @@ ansible-vault create secrets.yml
 
 YAML Format:
 ---
-api_key: "YOUR_TOKEN_HERE"
+api_key: "YOUR_VT_TOKEN_HERE"
+otx_key: "YOUR_OTX_KEY_HERE"
 ```
 
 ## Usage:
