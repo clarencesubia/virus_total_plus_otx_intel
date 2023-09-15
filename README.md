@@ -1,4 +1,5 @@
 # Virustotal / OTX URL, IP, and Hash Analysis through API
+![logo](https://github.com/meliodaaf/virus_total_url_checker/blob/main/docs/logo.png)
 ## Author: Clarence R. Subia
 
 ## Prerequisites
