@@ -2,6 +2,7 @@
 
 import json
 import time
+import datetime
 
 import argparse
 import requests
@@ -122,7 +123,7 @@ if __name__ == "__main__":
         result = get_ip_address(ip_addr)
         print(f"\n{G}[*] IP Address Details:{W}")
         for key, value in result.items():
-            print(f"\n{G}{key.upper()}:{W}\n{value}")
+            print(f"\n{G}{key.upper()}:{W}\n{', '.join(value)}")
 
     if target_url := args.url:
         result = vt_url_scan(target=target_url)
@@ -136,22 +137,25 @@ if __name__ == "__main__":
         name = attributes["meaningful_name"]
         file_size = attributes["size"]
         file_type = attributes["type_description"]
-        file_type_tags = ",".join(attributes["type_tags"])
+        file_type_tags = ", ".join(attributes["type_tags"])
         sha256 = attributes["sha256"]
         md5 = attributes["md5"]
         sha1 = attributes["sha1"]
         reputation = attributes["reputation"]
         votes = attributes["total_votes"]
+        creation_date = attributes["creation_date"]
+        creation_date_utc = datetime.datetime.utcfromtimestamp(creation_date)
         
         print(f"\n{G}[*] File / Hash Attributes:{W}")
         print(f"{G}Name:{W} {name}")
         print(f"{G}Size:{W} {file_size} bytes")
         print(f"{G}File Type:{W} {file_type}\n{G}Tags:{W} {file_type_tags}")
-        print(f"\n{G}Hashes:{W} \n\tSHA256: {sha256}\n\tSHA1: {sha1}\n\tMD5: {md5}")
+        print(f"{G}Creation Date:{W} {creation_date_utc} UTC")
+        print(f"\n{G}Hashes:{W} \nSHA256: {sha256}\nSHA1: {sha1}\nMD5: {md5}")
         print(f"\n{G}Reputation:{W} {reputation}")
         print(f"\n{G}Total votes:{W}")
-        print(f"\tHarmless: {votes['harmless']}")
-        print(f"\tMalicious: {votes['malicious']}")
+        print(f"Harmless: {votes['harmless']}")
+        print(f"Malicious: {votes['malicious']}")
         
         print(f"\n{G}[*] OTX AlienVault Result:{W}")
         otx_result = get_indicator_details(hash=target_hash)["general"]
