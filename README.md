@@ -37,6 +37,11 @@ python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5>
 python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5> --hash-comments
 ```
 
+- Dump indicators from OTX
+```
+python3 vt_lookup.py --hash <HASH_VALUE | SHA256 | SHA1 | MD5> --dump-indicators
+```
+
 
 ## References:
 
