@@ -69,14 +69,17 @@ def get_ip_address(ip):
     return result
 
 
-def get_indicator_details(hash):
-    hash_type = IndicatorTypes.FILE_HASH_MD5
-    if len(hash) == 64:
-        hash_type = IndicatorTypes.FILE_HASH_SHA256
-    if len(hash) == 40:
-        hash_type = IndicatorTypes.FILE_HASH_SHA1
+def get_indicator_details(type, target):
+    if type == "hash":
+        hash_type = IndicatorTypes.FILE_HASH_MD5
+        if len(target) == 64:
+            hash_type = IndicatorTypes.FILE_HASH_SHA256
+        if len(target) == 40:
+            hash_type = IndicatorTypes.FILE_HASH_SHA1
 
-    return otx.get_indicator_details_full(hash_type, hash)
+        return otx.get_indicator_details_full(hash_type, target)
+    elif type == "ip":
+        return otx.get_indicator_details_full(IndicatorTypes.IPv4, target)
 
 
 def get_indicators(id):
@@ -123,7 +126,33 @@ if __name__ == "__main__":
         result = get_ip_address(ip_addr)
         print(f"\n{G}[*] IP Address Details:{W}")
         for key, value in result.items():
-            print(f"\n{G}{key.upper()}:{W}\n{', '.join(value)}")
+            if type(value) is list:
+                print(f"\n{G}{key.upper()}:{W}\n{', '.join(value)}")
+            elif type(value) is dict:
+                print(f"\n{G}{key.upper()}{W}:")
+                print(f"Harmless: {value['harmless']}")
+                print(f"Malicious: {value['malicious']}")
+                print(f"Suspicious: {value['suspicious']}")
+                print(f"Undetected: {value['undetected']}")
+            else:
+                print(f"\n{G}{key.upper()}:{W}\n{value}")
+                
+        otx_result = get_indicator_details("ip", ip_addr)["general"]
+        
+        if otx_result["pulse_info"]["count"] > 0:
+        
+            if tags := otx_result["pulse_info"]["pulses"][0]["tags"]:
+                print(f"\n{G}Tags:{W}")
+                print(", ".join(tag for tag in tags))
+                
+            if malware_families := otx_result["pulse_info"]["pulses"][0]["malware_families"]:
+                print(f"\n{G}Malware Families:{W}")
+                print(f", ".join([mal["display_name"] for mal in malware_families]))
+
+            if attack_ids := otx_result["pulse_info"]["pulses"][0]["attack_ids"]:
+                print(f"\n{G}Attack Identifiers:{W}")
+                print(f", ".join([attack["display_name"] for attack in attack_ids]))
+
 
     if target_url := args.url:
         result = vt_url_scan(target=target_url)
@@ -143,8 +172,11 @@ if __name__ == "__main__":
         sha1 = attributes["sha1"]
         reputation = attributes["reputation"]
         votes = attributes["total_votes"]
-        creation_date = attributes["creation_date"]
-        creation_date_utc = datetime.datetime.utcfromtimestamp(creation_date)
+        try:
+            creation_date = attributes["creation_date"]
+            creation_date_utc = datetime.datetime.utcfromtimestamp(creation_date)
+        except KeyError:
+            creation_date_utc = "NA"
         
         print(f"\n{G}[*] File / Hash Attributes:{W}")
         print(f"{G}Name:{W} {name}")
@@ -158,26 +190,30 @@ if __name__ == "__main__":
         print(f"Malicious: {votes['malicious']}")
         
         print(f"\n{G}[*] OTX AlienVault Result:{W}")
-        otx_result = get_indicator_details(hash=target_hash)["general"]
+        otx_result = get_indicator_details("hash", target_hash)["general"]
         
-        if tags := otx_result["pulse_info"]["pulses"][0]["tags"]:
-            print(f"\n{G}Tags:{W}")
-            print(", ".join(tag for tag in tags))
-                
-        if malware_families := otx_result["pulse_info"]["pulses"][0]["malware_families"]:
-            print(f"\n{G}Malware Families:{W}")
-            print(f", ".join([mal["display_name"] for mal in malware_families]))
+        if otx_result["pulse_info"]["count"] > 0:
+        
+            if tags := otx_result["pulse_info"]["pulses"][0]["tags"]:
+                print(f"\n{G}Tags:{W}")
+                print(", ".join(tag for tag in tags))
+                    
+            if malware_families := otx_result["pulse_info"]["pulses"][0]["malware_families"]:
+                print(f"\n{G}Malware Families:{W}")
+                print(f", ".join([mal["display_name"] for mal in malware_families]))
 
-        if attack_ids := otx_result["pulse_info"]["pulses"][0]["attack_ids"]:
-            print(f"\n{G}Attack Identifiers:{W}")
-            print(f", ".join([attack["display_name"] for attack in attack_ids]))
+            if attack_ids := otx_result["pulse_info"]["pulses"][0]["attack_ids"]:
+                print(f"\n{G}Attack Identifiers:{W}")
+                print(f", ".join([attack["display_name"] for attack in attack_ids]))
 
-        if args.dump_indicators:
-            if pulse_id := otx_result["pulse_info"]["pulses"][0]["id"]:
-                print(f"{G}\n[*] Dumping indicators to a file.{W}")
-                indicators = get_indicators(id=pulse_id)
-                with open(f"{pulse_id}.txt", "w") as file:
-                    file.write(indicators)
+            if args.dump_indicators:
+                if pulse_id := otx_result["pulse_info"]["pulses"][0]["id"]:
+                    print(f"{G}\n[*] Dumping indicators to a file.{W}")
+                    indicators = get_indicators(id=pulse_id)
+                    with open(f"{pulse_id}.txt", "w") as file:
+                        file.write(indicators)
+        else:
+            print(f"No Additional Analysis Available from OTX.")
         
         
         if args.hash_comments:
