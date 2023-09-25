@@ -28,8 +28,7 @@ def vt_url_scan_analysis(id, vendors=[]):
         data = json.loads(resp.text)
         status = data["data"]["attributes"]["status"]
         while status != "completed":
-            time.sleep(5)
-            vt_url_scan()
+            time.sleep(10)
         else:
             results = data["data"]["attributes"]["results"]
             for vendor in results:
@@ -57,6 +56,8 @@ def get_ip_address(ip):
     if resp.ok:
         data = resp.json()["data"]["attributes"]
 
+        network = data["network"]
+        asn = data["asn"]
         analysis = data["last_analysis_stats"]
         country = data["country"]
         votes = data["last_analysis_results"]
@@ -65,6 +66,8 @@ def get_ip_address(ip):
         result["analysis"] = analysis
         result["country"] = country
         result["malicious_vendor_verdicts"] = mal_votes
+        result["network"] = network
+        result["asn"] = asn
         
     return result
 
@@ -119,7 +122,7 @@ if __name__ == "__main__":
     args = load_parsers()  
     vt_base_url = "https://www.virustotal.com/api/v3"
     session = requests.Session()
-    session.headers = {"X-Apikey": token["api_key"]}
+    session.headers = {"X-Apikey": token["vt_key"]}
     otx = OTXv2(token["otx_key"])
     
     if ip_addr := args.ip:
